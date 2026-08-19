@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Златенька, ты моё счастье 💗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Анимированный фон с плывущими сердечками — на весь сайт -->
+<div class="hearts-bg" id="heartsBg" aria-hidden="true"></div>
+
+<!-- ===== HERO (без фото, только текст и анимация сердец) ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">Специально для самой особенной девушки</p>
+    <h1 class="hero-title">Златенька,<br>ты моё счастье</h1>
+    <p class="hero-confession">Я люблю тебя. Просто так. Без повода. 💗</p>
+    <div class="scroll-hint">
+      <span>пролистай вниз</span>
+      <div class="scroll-arrow">↓</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ПРИЧИНЫ (плитки собираются в сердце — генерируются в script.js) ===== -->
+<section id="reasons" class="reasons heart-section fade-in">
+  <h2 class="section-title">Причины, почему я люблю тебя</h2>
+  <p class="section-subtitle">Нажми на любую, чтобы прочитать</p>
+  <div class="heart-container" id="heartContainer">
+    <svg class="heart-outline" id="heartOutline" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+    <div class="heart-petals" id="heartPetals" aria-hidden="true"></div>
+    <div class="heart-tiles" id="heartTiles"></div>
+  </div>
+</section>
+
+<div id="heartModal" class="heart-modal hidden">
+  <div class="heart-modal-card">
+    <button id="heartModalClose" class="heart-modal-close" aria-label="Закрыть">&times;</button>
+    <p id="heartModalText" class="heart-modal-text"></p>
+  </div>
+</div>
+
+<!-- ===== ДОРОГА НАШЕЙ ЛЮБВИ (галерея) ===== -->
+<!--
+  Шесть остановок (карточки + модальные окна с перепиской/письмом/фото)
+  генерируются в script.js из массива ROAD_STOPS — там же лежит весь текст.
+  Плейсхолдеры вместо фото — см. buildPhotoPlaceholder() в script.js,
+  там оставлен комментарий, как заменить на реальные <img>.
+-->
+<section id="gallery" class="gallery fade-in">
+  <h2 class="section-title">Дорога нашей любви</h2>
+  <p class="section-subtitle">Путь, который мы уже прошли вместе</p>
+  <div class="roadmap" id="galleryGrid">
+    <svg class="roadmap-svg" viewBox="0 0 320 1120" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="roadGradient" x1="0" y1="0" x2="0" y2="1120" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#ffd39a"/>
+          <stop offset="45%" stop-color="#ff9ab5"/>
+          <stop offset="100%" stop-color="#d6437a"/>
+        </linearGradient>
+        <filter id="roadShadowBlur" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="7"/>
+        </filter>
+      </defs>
+      <!-- мягкая тень дороги — даёт объём -->
+      <path class="roadmap-shadow" d="M70,60 C100.0,93.3 250.0,193.3 250.0,260.0 C250.0,326.7 70.0,393.3 70.0,460.0 C70.0,526.7 250.0,593.3 250.0,660.0 C250.0,726.7 70.0,793.3 70.0,860.0 C70.0,926.7 220.0,1026.7 250.0,1060.0" filter="url(#roadShadowBlur)"/>
+      <!-- сама дорога — плавный градиент от золотого к бордовому, прорисовывается при скролле (см. initRoadmapScrollDraw в script.js) -->
+      <path class="roadmap-road" d="M70,60 C100.0,93.3 250.0,193.3 250.0,260.0 C250.0,326.7 70.0,393.3 70.0,460.0 C70.0,526.7 250.0,593.3 250.0,660.0 C250.0,726.7 70.0,793.3 70.0,860.0 C70.0,926.7 220.0,1026.7 250.0,1060.0" stroke="url(#roadGradient)"/>
+      <!-- светящаяся дорожка из точек по центру пути -->
+      <path class="roadmap-road-dots" d="M70,60 C100.0,93.3 250.0,193.3 250.0,260.0 C250.0,326.7 70.0,393.3 70.0,460.0 C70.0,526.7 250.0,593.3 250.0,660.0 C250.0,726.7 70.0,793.3 70.0,860.0 C70.0,926.7 220.0,1026.7 250.0,1060.0"/>
+    </svg>
+    <div class="roadmap-sparkles" id="roadmapSparkles" aria-hidden="true"></div>
+    <!-- .roadmap-stop (маркер + плашка-название + карточка) для каждой остановки достраивается сюда через JS -->
+  </div>
+</section>
+
+<!-- ===== СЧЁТЧИК ДНЕЙ ВМЕСТЕ ===== -->
+<!-- Укажите настоящую дату начала отношений в script.js — переменная startDate -->
+<section id="counter" class="counter fade-in">
+  <h2 class="section-title">Мы вместе уже...</h2>
+  <div class="counter-grid">
+    <div class="counter-box"><span id="countDays">0</span><label>дней</label></div>
+    <div class="counter-box"><span id="countHours">00</span><label>часов</label></div>
+    <div class="counter-box"><span id="countMinutes">00</span><label>минут</label></div>
+    <div class="counter-box"><span id="countSeconds">00</span><label>секунд</label></div>
+  </div>
+  <p class="counter-caption">...и я не хочу, чтобы это когда-нибудь заканчивалось</p>
+</section>
+
+<!-- ===== НАША ПЕСНЯ (кнопка на исходном месте + выезжающая панель-плеер) =====
+     Источник звука — локальный файл audio/our-song.mp3 (загружен пользователем). -->
+<section id="music" class="music fade-in">
+  <h2 class="section-title">Эта песня напоминает мне о тебе</h2>
+  <button id="songTriggerBtn" class="song-trigger" aria-label="Включить нашу песню">
+    <span class="song-trigger-icon">🎵</span>
+    <span class="song-trigger-label">Включить нашу песню</span>
+  </button>
+  <audio id="songAudio" src="audio/our-song.mp3" preload="none"></audio>
+</section>
+
+<div id="songPanel" class="song-panel">
+  <button id="songPanelClose" class="song-panel-close" aria-label="Закрыть">&times;</button>
+  <div class="song-cover"><span class="song-cover-heart">💗</span></div>
+  <div class="song-info">
+    <p class="song-title">Мало тебя</p>
+    <p class="song-artist">SEREBRO</p>
+  </div>
+  <div class="song-controls">
+    <button id="songPlayPause" class="song-play-btn" aria-label="Играть">▶</button>
+    <div class="song-volume">
+      <span class="song-volume-icon">🔈</span>
+      <input type="range" id="songVolume" min="0" max="100" value="70" aria-label="Громкость">
+    </div>
+  </div>
+  <p id="songMsg" class="song-msg"></p>
+</div>
+
+<!-- ===== ПИСЬМО ЛЮБВИ ===== -->
+<section id="letter" class="letter fade-in">
+  <h2 class="section-title">Письмо для тебя</h2>
+  <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Открыть письмо">
+    <div class="envelope-seal">💌</div>
+    <p class="envelope-label">нажми, чтобы открыть</p>
+  </div>
+  <div class="letter-paper hidden" id="letterPaper">
+    <p>Моя дорогая Златенька,</p>
+    <p>Я хочу, чтобы ты знала: рядом с тобой я чувствую себя по-настоящему живым. Ты умеешь замечать то, что другие пропускают, ты умеешь любить открыто и щедро, и рядом с тобой даже обычные дни становятся особенными.</p>
+    <p>Спасибо тебе за терпение, за смех, за честность, за то, что ты остаёшься собой, даже когда это непросто. Спасибо, что делишь со мной свои мечты и позволяешь мне быть частью твоей истории.</p>
+    <p>Я не знаю, что готовит нам будущее, но точно знаю одно: я хочу проходить через него рядом с тобой — через смех и трудности, через тихие вечера и большие приключения.</p>
+    <p>Я тебя очень сильно люблю. Сегодня, завтра и всегда.</p>
+    <p class="letter-signature">Твой,<br>Даня 💛</p>
+    <button id="letterClose" class="letter-close">закрыть письмо</button>
+  </div>
+</section>
+
+<!-- ===== ГЕНЕРАТОР КОМПЛИМЕНТОВ ===== -->
+<section id="compliment" class="compliment fade-in">
+  <h2 class="section-title">Комплимент для Златеньки</h2>
+  <button id="complimentBtn" class="compliment-btn">Скажи мне что-нибудь приятное 💗</button>
+  <div id="complimentBubble" class="compliment-bubble hidden"></div>
+</section>
+
+<footer class="site-footer">
+  <p>Сделано с любовью специально для тебя, любимая 💗</p>
+</footer>
+
+<!-- ===== СЕКРЕТНЫЙ РАЗДЕЛ (маленькое сердечко в углу экрана) ===== -->
+<div id="secretHeart" class="secret-heart" role="button" tabindex="0" aria-label="Секрет">💗</div>
+<div id="secretMessage" class="secret-message hidden">
+  <div class="secret-card">
+    <button id="secretClose" class="secret-close" aria-label="Закрыть">&times;</button>
+    <p class="secret-title">Ты нашла секрет! 🎉</p>
+    <p>Даже когда я молчу, я думаю о тебе.<br>Даже в самый сумасшедший день ты — моя тихая гавань.</p>
+    <p>Спасибо, что ты есть. Я люблю тебя больше, чем умещается в словах. 💕</p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,1403 @@
+/* =========================================================
+   Любовь к Златеньке — стили
+   Палитра: фон #fff0f5, акцент #ffb6c1, заголовки #d6336c
+   Шрифты: Caveat (рукописный), Nunito (основной)
+   ========================================================= */
+
+:root {
+  --color-bg: #fff0f5;
+  --color-bg-soft: #ffe4ec;
+  --color-accent: #ffb6c1;
+  --color-accent-deep: #ff8fa8;
+  --color-heading: #d6336c;
+  --color-heading-deep: #a8244f;
+  --color-text: #5c3345;
+  --color-text-soft: #8a5a6e;
+  --color-card: #ffffff;
+  --color-card-warm: #fff6ea;
+  --color-border-warm: rgba(214, 51, 108, 0.16);
+  --color-gold: #f4c95d;
+  --font-hand: 'Caveat', cursive;
+  --font-main: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  --radius: 22px;
+  --radius-sm: 14px;
+  --shadow-soft: 0 12px 30px rgba(214, 51, 108, 0.14);
+  --shadow-lift: 0 18px 40px rgba(214, 51, 108, 0.22);
+  --shadow-inset: inset 0 0 0 1px rgba(214, 51, 108, 0.1);
+
+  /* Шкала отступов — берём дисциплину шага из референса, оставляя наши
+     значения (кратные 4/8) для более ровного вертикального ритма. */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-56: 56px;
+  --space-80: 80px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: var(--font-main);
+  background: linear-gradient(-45deg, #fff5f8, #ffb8d1, #ff7aab, #ffcfa3, #ffa8c8, #fff0f5);
+  background-size: 400% 400%;
+  animation: gradientShift 18s ease infinite;
+  color: var(--color-text);
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Едва заметная бумажно-шумовая текстура поверх градиента — добавляет
+   "тепла" и объёма фону, не отвлекая от контента. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -4;
+  pointer-events: none;
+  opacity: 0.1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22140%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.85%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* Два мягких радиальных свечения — тёплое белое и едва золотистое —
+   медленно "дышат" по экрану в противофазе, добавляя воздух и глубину.
+   Синхронизированы по длительности с анимацией градиента (18s). */
+body::after {
+  content: '';
+  position: fixed;
+  inset: -15%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 48%),
+    radial-gradient(circle at 76% 78%, rgba(255, 224, 168, 0.32) 0%, rgba(255, 224, 168, 0) 50%);
+  mix-blend-mode: soft-light;
+  animation: glowDrift 18s ease-in-out infinite;
+}
+
+@keyframes glowDrift {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  50% { transform: translate(9%, 7%) scale(1.06); }
+}
+
+img { max-width: 100%; display: block; }
+
+button { font-family: inherit; border: none; background: none; }
+
+:focus-visible {
+  outline: 3px solid var(--color-heading);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.hidden { display: none !important; }
+
+/* ---------- Общая сетка секций ---------- */
+section:not(.hero) {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: var(--space-80) var(--space-24);
+  text-align: center;
+}
+
+.section-title {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  color: var(--color-heading);
+  font-size: clamp(2.1rem, 5vw, 3.1rem);
+  margin: 0 0 8px;
+}
+
+.section-subtitle {
+  color: var(--color-text-soft);
+  font-size: 1.05rem;
+  margin: 0 0 20px;
+}
+
+/* ---------- Fade-in при скролле ---------- */
+.fade-in {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.hearts-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.heart-particle {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 8px 14px rgba(168, 36, 79, 0.2));
+}
+
+/* Редкие золотые акцентные сердечки — с тёплым свечением */
+.heart-particle.gold {
+  filter: drop-shadow(0 0 8px rgba(244, 201, 93, 0.75)) drop-shadow(0 6px 12px rgba(168, 36, 79, 0.18));
+}
+
+.heart-particle.floating {
+  bottom: -10%;
+  animation-name: floatUp;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+.heart-particle svg { display: block; width: 100%; height: 100%; }
+
+@keyframes floatUp {
+  0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translateY(-55vh) translateX(20px) rotate(10deg); }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(-110vh) translateX(-10px) rotate(-8deg); opacity: 0; }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+}
+
+.hero-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-heading-deep);
+  margin: 0 0 18px;
+}
+
+.hero-title {
+  font-family: var(--font-hand);
+  font-weight: 700;
+  font-size: clamp(3rem, 9vw, 5.2rem);
+  color: var(--color-heading);
+  line-height: 1.1;
+  margin: 0 0 20px;
+}
+
+.hero-confession {
+  font-family: var(--font-hand);
+  font-size: 1.7rem;
+  color: var(--color-heading-deep);
+  margin: 22px 0 0;
+}
+
+.scroll-hint {
+  margin-top: 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-soft);
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.scroll-arrow {
+  font-size: 1.2rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* ========================================================================
+   ПРИЧИНЫ — СЕРДЦЕ ИЗ ПЛИТОК (написано с нуля)
+   Структура слоёв внутри .heart-container (снизу вверх):
+     1. .heart-outline — тонкий SVG-контур силуэта сердца
+     2. .heart-petals  — фон из плавающих лепестков
+     3. .heart-tiles   — сами плитки (крупные — с номером/кликом,
+                          мелкие decorative-заполнители — без текста)
+   ======================================================================== */
+
+.heart-container {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 40px auto 0;
+}
+
+/* --- 1. Контур сердца (объединяет форму, если между плитками видны зазоры) --- */
+.heart-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.heart-outline path {
+  fill: none;
+  stroke: var(--color-accent-deep);
+  stroke-width: 1.6;
+  vector-effect: non-scaling-stroke;
+  opacity: 0.55;
+}
+
+/* --- 2. Лепестки на фоне --- */
+.heart-petals {
+  position: absolute;
+  inset: -8%;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.petal {
+  position: absolute;
+  width: 20px;
+  height: 13px;
+  border-radius: 50% 0 50% 50%;
+  opacity: 0.45;
+  transform: rotate(var(--rot, 0deg));
+  animation-name: petalDrift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes petalDrift {
+  0%, 100% { transform: translateY(0) rotate(var(--rot, 0deg)); }
+  50% { transform: translateY(-16px) rotate(calc(var(--rot, 0deg) + 20deg)); }
+}
+
+/* --- 3. Плитки --- */
+.heart-tiles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+/* Общее для крупных (кликабельных) и мелких (декоративных) плиток:
+   до сборки — разбросаны в случайную сторону, повёрнуты и уменьшены. */
+.heart-tile,
+.heart-filler {
+  position: absolute;
+  border-radius: 7px;
+  transform: translate(-50%, -50%) translate(var(--sx, 0px), var(--sy, 0px)) scale(0.25) rotate(var(--srot, 0deg));
+  opacity: 0;
+  transition: transform 0.9s cubic-bezier(0.22, 0.8, 0.2, 1), opacity 0.6s ease, box-shadow 0.2s ease;
+  transition-delay: var(--delay, 0s);
+}
+
+/* Крупная плитка — с номером, кликабельная.
+   Ширина (9%) подобрана так, чтобы при реальном расстоянии между соседними
+   плитками (~11% контейнера) между ними оставался чёткий зазор. */
+.heart-tile {
+  width: 9%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-main);
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(168, 36, 79, 0.22);
+}
+
+/* Декоративный элемент между плитками — цветочек/сердечко/звёздочка без текста,
+   не кликается, только заполняет пустоты и объединяет композицию. */
+.heart-filler {
+  width: 3.6%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Сборка: и крупные, и мелкие плитки встают на место */
+.heart-section.visible .heart-tile,
+.heart-section.visible .heart-filler {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+}
+
+/* Наведение — увеличение и свечение (только у кликабельных плиток) */
+.heart-section.visible .heart-tile:hover,
+.heart-section.visible .heart-tile:focus-visible {
+  transform: translate(-50%, -50%) scale(1.65);
+  z-index: 30;
+  box-shadow: 0 0 16px 5px rgba(255, 255, 255, 0.7), 0 0 26px 8px rgba(255, 145, 180, 0.55);
+}
+
+/* Одна мягкая пульсация всего сердца после завершения сборки (класс добавляется из JS) */
+.heart-tiles.pulse-once {
+  animation: heartAssemblePulse 0.7s ease-out;
+}
+
+@keyframes heartAssemblePulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.035); }
+  100% { transform: scale(1); }
+}
+
+/* Модальное окно с полным текстом причины */
+.heart-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(92, 51, 69, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.heart-modal.visible { opacity: 1; }
+
+.heart-modal-card {
+  position: relative;
+  background: var(--color-card);
+  border-radius: var(--radius);
+  padding: var(--space-40) var(--space-32);
+  max-width: 420px;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s;
+  box-shadow: var(--shadow-inset), var(--shadow-lift);
+  font-family: var(--font-hand);
+  font-size: 1.4rem;
+  color: var(--color-text);
+}
+.heart-modal.visible .heart-modal-card { transform: scale(1); }
+
+.heart-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1.6rem;
+  color: var(--color-text-soft);
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* ---------- ДОРОГА НАШЕЙ ЛЮБВИ (галерея) ---------- */
+.roadmap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  margin: 44px auto 0;
+  aspect-ratio: 320 / 1120;
+}
+
+.roadmap-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transition: transform 0.2s linear; /* лёгкий параллакс от мыши, см. initRoadmapParallax */
+}
+
+/* Мягкая тень под дорогой — придаёт объём, будто путь чуть приподнят */
+.roadmap-shadow {
+  fill: none;
+  stroke: rgba(122, 26, 69, 0.28);
+  stroke-width: 24;
+  stroke-linecap: round;
+  transform: translate(5px, 9px);
+}
+
+/* Сама дорога — заливка градиентом (задаётся в <defs> в HTML) от тёплого
+   золотого в начале пути к глубокому бордовому — символизирует путь,
+   который "разгорается" по мере того, как мы идём по нему вместе.
+   stroke-dashoffset управляется из JS (initRoadmapScrollDraw) в такт скроллу,
+   поэтому transition тут короткий — только чтобы сгладить дискретные кадры. */
+.roadmap-road {
+  fill: none;
+  stroke-width: 20;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.1s linear;
+}
+
+/* Светящаяся дорожка из мелких точек по центру пути — вместо разметки
+   обычной дороги, тут скорее "звёздная тропинка" */
+.roadmap-road-dots {
+  fill: none;
+  stroke: #fff6ea;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.5 15;
+  opacity: 0.95;
+}
+
+/* Мелкие искорки, разбросанные вдоль пути — декоративные, но интерактивные:
+   мерцают с разной скоростью/амплитудой, светятся золотом при наведении и
+   "разлетаются" на клик, возвращаясь на место через пару секунд. */
+.roadmap-sparkles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition: transform 0.2s linear; /* параллакс, синхронный с .roadmap-svg */
+}
+
+.roadmap-sparkle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 0.9rem;
+  opacity: 0.6;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: sparkleTwinkle ease-in-out infinite;
+  transition: filter 0.25s ease;
+}
+
+.roadmap-sparkle:hover,
+.roadmap-sparkle:focus-visible {
+  filter: drop-shadow(0 0 7px #f4c95d) brightness(1.5);
+}
+
+/* Разлёт по клику: анимация мерцания приостанавливается (иначе конфликтует
+   по свойству transform), а сама искорка плавно улетает в случайную сторону
+   и через ~2.5с возвращается — animation-play-state снова "running". */
+.roadmap-sparkle.fleeing {
+  animation-play-state: paused;
+  transition: transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.25s ease;
+  transform: translate(calc(-50% + var(--flee-x, 24px)), calc(-50% + var(--flee-y, 24px))) scale(1.3);
+}
+
+@keyframes sparkleTwinkle {
+  0%, 100% { opacity: 0.25; transform: translate(-50%, -50%) scale(var(--amp-min, 0.85)); }
+  50% { opacity: 0.8; transform: translate(-50%, -50%) scale(var(--amp-max, 1.15)); }
+}
+
+.roadmap-stop {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 2;
+}
+
+/* Маркер остановки — увеличен и контрастнее, чтобы точно не терялся на
+   фоне дороги: толще белое кольцо, более плотная тень. */
+.roadmap-marker {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-heading));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  box-shadow: 0 5px 16px rgba(122, 26, 69, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.55);
+  border: 4px solid #fff;
+  cursor: pointer;
+}
+
+/* Мягкий ореол-свечение позади метки — добавляет "огонька" каждой остановке */
+.roadmap-marker::before {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 182, 193, 0.65), rgba(255, 182, 193, 0) 70%);
+  z-index: -1;
+}
+
+/* Постоянная отметка "эта остановка уже открыта" — золотое кольцо вместо
+   отдельной (и незаметной) точки на дороге */
+.roadmap-marker.visited {
+  border-color: var(--color-gold);
+  box-shadow: 0 5px 16px rgba(122, 26, 69, 0.4), 0 0 0 4px rgba(244, 201, 93, 0.55);
+}
+
+/* Выносная плашка с названием остановки — единственное, что кроме иконки
+   видно прямо на дороге. Кликабельна (клик всплывает до маркера-родителя),
+   направлена к центру дороги, чтобы не обрезалась краем контейнера. */
+.roadmap-flag {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, var(--tile-a, var(--color-accent)), var(--tile-b, var(--color-heading)));
+  color: #fff;
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 5px 13px;
+  border-radius: 12px;
+  white-space: nowrap;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+}
+.roadmap-flag::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+}
+.roadmap-flag.flag-right { left: calc(100% + 12px); }
+.roadmap-flag.flag-right::after { right: 100%; border-right-color: var(--tile-a, var(--color-accent)); }
+.roadmap-flag.flag-left { right: calc(100% + 12px); }
+.roadmap-flag.flag-left::after { left: 100%; border-left-color: var(--tile-b, var(--color-heading)); }
+
+/* Вспышка маркера в момент клика по остановке */
+@keyframes markerFlash {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.3); box-shadow: 0 0 0 10px rgba(255, 255, 255, 0.35), var(--shadow-soft); }
+  100% { transform: scale(1); }
+}
+.roadmap-marker.marker-flash { animation: markerFlash 0.6s ease-out; }
+
+/* ---------- ОКНО-ПРЕВЬЮ ОСТАНОВКИ (создаётся динамически в JS) ----------
+   Промежуточный шаг между дорогой и полным вложением: название, текст,
+   который раньше был виден на самой дороге, и кнопка, открывающая уже
+   полноценное окно с перепиской/письмом/фото (road-modal ниже). */
+.road-preview-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 940;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(92, 51, 69, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.road-preview-overlay.visible { opacity: 1; }
+
+.road-preview {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  background: rgba(255, 253, 249, 0.96);
+  border-radius: 22px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+  padding: 32px 26px 26px;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+.road-preview-overlay.visible .road-preview { transform: scale(1); }
+
+.road-preview-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 1.4rem;
+  color: var(--color-text-soft);
+  cursor: pointer;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+.road-preview-close:hover, .road-preview-close:focus-visible { transform: rotate(90deg); }
+
+.road-preview-title {
+  font-family: var(--font-hand);
+  font-size: 1.5rem;
+  color: var(--color-heading);
+  margin: 4px 0 10px;
+}
+
+.road-preview-caption {
+  font-family: var(--font-main);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--color-text-soft);
+  margin: 0 0 18px;
+}
+
+.road-preview-btn {
+  display: inline-block;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 22px;
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--tile-a, var(--color-accent)), var(--tile-b, var(--color-heading)));
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.road-preview-btn:hover, .road-preview-btn:focus-visible { transform: scale(1.05); }
+
+/* ---------- МОДАЛЬНОЕ ОКНО ОСТАНОВКИ (создаётся динамически в JS) ---------- */
+.road-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(92, 51, 69, 0.42);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.road-modal-overlay.visible { opacity: 1; }
+
+.road-modal {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  max-height: 82vh;
+  overflow-y: auto;
+  background: rgba(255, 253, 249, 0.94);
+  border-radius: 24px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.25);
+  padding: 38px 30px 32px;
+  transform: scale(0.9);
+  transition: transform 0.35s cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+.road-modal-overlay.visible .road-modal { transform: scale(1); }
+
+.road-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 1.6rem;
+  color: var(--color-text-soft);
+  cursor: pointer;
+  line-height: 1;
+  transition: transform 0.3s ease;
+}
+.road-modal-close:hover, .road-modal-close:focus-visible { transform: rotate(90deg); }
+
+.road-modal-title {
+  font-family: var(--font-hand);
+  font-size: 1.8rem;
+  color: var(--color-heading);
+  margin: 0 0 14px;
+  text-align: center;
+}
+
+.road-modal-meta {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--color-text-soft);
+  margin: -6px 0 16px;
+}
+
+/* Текст, который раньше был только в превью — теперь показывается прямо
+   перед фото в самой модалке (у "Пополнение"/"Приключение") */
+.road-modal-caption {
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  color: var(--color-text);
+  margin: -4px 0 16px;
+}
+
+.road-modal-heading {
+  font-family: var(--font-hand);
+  font-size: 1.7rem;
+  color: var(--color-heading);
+  text-align: center;
+  margin: 0 0 16px;
+}
+
+/* Плейсхолдер фото внутри модалки — см. buildPhotoPlaceholder() в script.js
+   для инструкции, как заменить на реальное изображение */
+.road-photo-placeholder {
+  width: 100%;
+  max-width: 300px;
+  aspect-ratio: 1;
+  margin: 0 auto 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--tile-a, var(--color-accent)), var(--tile-b, var(--color-heading)));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.road-photo-real {
+  object-fit: cover;
+  background: var(--color-card);
+}
+
+/* --- Переписка (остановка «Первый разговор») --- */
+.road-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.road-chat-msg {
+  max-width: 82%;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  opacity: 0;
+  animation: chatMsgIn 0.4s ease forwards;
+}
+@keyframes chatMsgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.road-chat-left { align-self: flex-start; align-items: flex-start; }
+.road-chat-right { align-self: flex-end; align-items: flex-end; }
+.road-chat-meta {
+  font-size: 0.68rem;
+  color: var(--color-text-soft);
+  padding: 0 4px;
+}
+.road-chat-bubble {
+  padding: 8px 14px;
+  border-radius: 16px;
+  font-family: var(--font-main);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+.road-chat-left .road-chat-bubble { background: #e7edf5; color: #3c4a5c; border-bottom-left-radius: 4px; }
+.road-chat-right .road-chat-bubble { background: #ffe0ea; color: #7a2c4d; border-bottom-right-radius: 4px; }
+
+/* --- Письмо-признание (остановка «Признание») --- */
+.road-letter {
+  font-family: var(--font-hand);
+  font-size: 1.25rem;
+  line-height: 1.55;
+  color: var(--color-text);
+  text-align: left;
+}
+.road-letter p { margin: 0 0 14px; }
+
+/* Небольшой необязательный бонус под письмом — намеренно тихий и мелкий,
+   чтобы не спорить с самим признанием: тонкая линия-разделитель, маленькое
+   фото и приглушённая подпись мелким обычным шрифтом. */
+.road-letter-bonus {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--color-border-warm);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.road-letter-bonus-img {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+  opacity: 0.92;
+  cursor: zoom-in;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.road-letter-bonus-img:hover, .road-letter-bonus-img:focus-visible {
+  transform: scale(1.12);
+  opacity: 1;
+}
+.road-letter-bonus-caption {
+  margin: 0;
+  font-family: var(--font-main);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--color-text-soft);
+  text-align: left;
+}
+
+/* --- Разворот бонус-фото на весь экран --- */
+.bonus-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 970;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background: rgba(40, 15, 27, 0.82);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.bonus-lightbox-overlay.visible { opacity: 1; }
+
+.bonus-lightbox-frame {
+  position: relative;
+  transform: scale(0.92);
+  transition: transform 0.3s cubic-bezier(0.22, 0.8, 0.2, 1);
+}
+.bonus-lightbox-overlay.visible .bonus-lightbox-frame { transform: scale(1); }
+
+.bonus-lightbox-img {
+  display: block;
+  max-width: 88vw;
+  max-height: 82vh;
+  border-radius: 14px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* Круглый крестик закрытия — справа сверху от фото; при наведении
+   подсвечивается и слегка проворачивается */
+.bonus-lightbox-close {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  color: var(--color-heading-deep);
+  font-size: 1.3rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, background 0.2s ease, color 0.2s ease;
+}
+.bonus-lightbox-close:hover, .bonus-lightbox-close:focus-visible {
+  background: var(--color-heading);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+/* --- Текст воспоминания под фото (остановка «Первая встреча») --- */
+.road-memory-text {
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  text-align: left;
+}
+.road-memory-text p { margin: 0 0 12px; }
+
+
+.envelope {
+  max-width: 300px;
+  margin: 30px auto 0;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-heading));
+  border-radius: var(--radius);
+  padding: 44px 20px;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.envelope:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+
+/* Намёк на треугольный клапан конверта — тонкий блик сверху */
+.envelope::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 46%;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0) 70%);
+  clip-path: polygon(0 0, 50% 60%, 100% 0);
+  pointer-events: none;
+}
+
+/* Печать-медальон вместо просто эмодзи */
+.envelope-seal {
+  position: relative;
+  z-index: 1;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 2rem;
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 65%),
+    rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.35), 0 4px 10px rgba(122, 26, 69, 0.28);
+}
+
+.envelope-label {
+  font-family: var(--font-hand);
+  font-size: 1.3rem;
+  margin: 12px 0 0;
+  position: relative;
+  z-index: 1;
+}
+
+.letter-paper {
+  position: relative;
+  max-width: 580px;
+  margin: 30px auto 0;
+  background-color: #fffaf1;
+  background-image:
+    repeating-linear-gradient(to bottom, transparent 0 35px, rgba(182, 44, 92, 0.22) 35px 36px),
+    linear-gradient(to right, transparent 46px, rgba(214, 51, 108, 0.4) 47px, rgba(214, 51, 108, 0.4) 48px, transparent 49px);
+  border: 1px solid var(--color-border-warm);
+  border-radius: var(--radius);
+  padding: 44px 36px 36px 60px;
+  box-shadow: var(--shadow-soft);
+  font-family: var(--font-hand);
+  font-size: 1.35rem;
+  line-height: 36px;
+  color: var(--color-text);
+  text-align: left;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s, transform 0.5s;
+}
+.letter-paper.visible { opacity: 1; transform: translateY(0); }
+.letter-paper p { margin: 0 0 16px; }
+
+/* Небольшой орнамент сверху и едва заметное сердечко в уголке —
+   лёгкий намёк на настоящую открытку */
+.letter-paper::before {
+  content: '❦';
+  display: block;
+  text-align: center;
+  font-size: 1.5rem;
+  color: var(--color-accent-deep);
+  opacity: 0.8;
+  margin-bottom: 10px;
+}
+.letter-paper::after {
+  content: '💗';
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  font-size: 1.05rem;
+  opacity: 0.3;
+  transform: rotate(-10deg);
+}
+
+/* Крупная буквица у первого абзаца — как в настоящем письме */
+.letter-paper p:first-of-type::first-letter {
+  font-size: 2.3em;
+  line-height: 0.7;
+  font-weight: 700;
+  float: left;
+  padding: 4px 8px 0 0;
+  color: var(--color-heading);
+}
+
+.letter-signature { color: var(--color-heading); }
+
+.letter-close {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-family: var(--font-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-heading-deep);
+  background: rgba(255, 182, 193, 0.2);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.letter-close:hover {
+  background: rgba(255, 182, 193, 0.35);
+  transform: translateY(-1px);
+}
+
+/* ---------- СЧЁТЧИК ---------- */
+.counter-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 30px;
+}
+
+.counter-box {
+  background: var(--color-card);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-inset), var(--shadow-soft);
+  padding: var(--space-16) var(--space-24);
+  min-width: 96px;
+}
+
+.counter-box span {
+  display: block;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  color: var(--color-heading);
+}
+
+.counter-box label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text-soft);
+}
+
+.counter-caption {
+  margin-top: 22px;
+  font-family: var(--font-hand);
+  font-size: 1.3rem;
+  color: var(--color-heading-deep);
+}
+
+/* ---------- ПЛЕЕР «НАША ПЕСНЯ» ---------- */
+.song-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 30px auto 0;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-heading));
+  color: #fff;
+  border-radius: 50px;
+  padding: 16px 32px;
+  font-family: var(--font-main);
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.song-trigger:hover, .song-trigger:focus-visible { transform: translateY(-3px); box-shadow: var(--shadow-lift); }
+.song-trigger:active { transform: translateY(0); }
+
+.song-trigger-icon { font-size: 1.15rem; display: inline-block; }
+.song-trigger.is-playing .song-trigger-icon { animation: songIconPulse 1.2s ease-in-out infinite; }
+
+@keyframes songIconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.28); }
+}
+
+.song-panel {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  width: 260px;
+  max-width: calc(100vw - 40px);
+  background: var(--color-card);
+  border-radius: var(--radius);
+  padding: 20px 20px 18px;
+  box-shadow: var(--shadow-lift);
+  z-index: 521;
+  transform: translateX(-50%) translateY(24px) scale(0.94);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.22, 0.8, 0.2, 1), opacity 0.35s ease;
+}
+
+.song-panel.open {
+  transform: translateX(-50%) translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.song-panel-close {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 1.5rem;
+  color: var(--color-text-soft);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.song-cover {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  margin: 6px auto 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-heading));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+}
+.song-cover::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  border: 2px dashed rgba(255, 255, 255, 0.55);
+}
+.song-cover-heart { font-size: 1.8rem; }
+
+.song-panel.is-playing .song-cover { animation: songSpin 6s linear infinite; }
+
+@keyframes songSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.song-info { text-align: center; margin-bottom: 14px; }
+.song-title { font-family: var(--font-hand); font-size: 1.3rem; color: var(--color-heading); margin: 0; }
+.song-artist {
+  font-size: 0.75rem;
+  color: var(--color-text-soft);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 2px 0 0;
+}
+
+.song-controls { display: flex; align-items: center; gap: 12px; }
+
+.song-play-btn {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-heading));
+  color: #fff;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+.song-play-btn:hover { transform: scale(1.08); }
+
+.song-volume { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+.song-volume-icon { font-size: 0.9rem; }
+.song-volume input[type="range"] {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--color-heading);
+  cursor: pointer;
+}
+
+.song-msg {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--color-text-soft);
+  text-align: center;
+  min-height: 1.1em;
+}
+
+@media (max-width: 420px) {
+  .song-panel { left: 50%; width: calc(100vw - 28px); bottom: 14px; }
+}
+
+/* ---------- КОМПЛИМЕНТЫ ---------- */
+.compliment-btn {
+  background: linear-gradient(135deg, var(--color-gold), var(--color-accent));
+  color: #6b3a1c;
+  padding: 16px 30px;
+  border-radius: 50px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  animation: btnPulse 2.6s ease-in-out infinite;
+}
+.compliment-btn:hover { animation-play-state: paused; }
+
+@keyframes btnPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 182, 193, 0.55), var(--shadow-soft); }
+  50% { box-shadow: 0 0 0 16px rgba(255, 182, 193, 0), var(--shadow-soft); }
+}
+
+/* Красивый бегущий блик при наведении — общий эффект для главных кнопок
+   сайта. Полупрозрачная светлая полоса пробегает по диагонали слева
+   направо, будто на кнопке заиграл свет. */
+.envelope::before,
+.song-trigger::before,
+.song-play-btn::before,
+.compliment-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  transform: skewX(-18deg);
+  transition: left 0.75s ease;
+  pointer-events: none;
+}
+
+.envelope:hover::before,
+.song-trigger:hover::before,
+.song-play-btn:hover::before,
+.compliment-btn:hover::before {
+  left: 130%;
+}
+
+.compliment-bubble {
+  position: relative;
+  max-width: 460px;
+  margin: 30px auto 0;
+  background: var(--color-card);
+  color: var(--color-heading-deep);
+  padding: 20px 26px;
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft);
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+  transition: opacity 0.35s, transform 0.35s;
+}
+.compliment-bubble.visible { opacity: 1; transform: translateY(0) scale(1); }
+.compliment-bubble::after {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 0 9px 9px 9px;
+  border-style: solid;
+  border-color: transparent transparent var(--color-card) transparent;
+}
+
+/* ---------- FOOTER ---------- */
+.site-footer {
+  text-align: center;
+  padding: 40px 24px 100px;
+  font-family: var(--font-hand);
+  font-size: 1.2rem;
+  color: var(--color-heading-deep);
+}
+
+
+/* ---------- СЕКРЕТ ---------- */
+.secret-heart {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-size: 1.7rem;
+  opacity: 0.5;
+  cursor: pointer;
+  z-index: 500;
+  user-select: none;
+  animation: gentlePulse 3s ease-in-out infinite;
+}
+.secret-heart:hover, .secret-heart:focus-visible { opacity: 1; transform: scale(1.15); }
+
+@keyframes gentlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+.secret-message {
+  position: fixed;
+  inset: 0;
+  background: rgba(92, 51, 69, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.secret-message.visible { opacity: 1; }
+
+.secret-card {
+  position: relative;
+  background: var(--color-card);
+  border-radius: var(--radius);
+  padding: var(--space-40) var(--space-32);
+  max-width: 380px;
+  text-align: center;
+  transform: scale(0.9);
+  transition: transform 0.3s;
+  box-shadow: var(--shadow-inset), var(--shadow-lift);
+}
+.secret-message.visible .secret-card { transform: scale(1); }
+
+.secret-title {
+  font-family: var(--font-hand);
+  font-size: 1.6rem;
+  color: var(--color-heading);
+  margin-top: 0;
+}
+
+.secret-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 1.6rem;
+  color: var(--color-text-soft);
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* ---------- АДАПТИВНОСТЬ ---------- */
+@media (max-width: 600px) {
+  section:not(.hero) { padding: 54px 18px; }
+  .reasons-grid, .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .letter-paper { padding: 24px 18px 24px 56px; font-size: 1.15rem; }
+  .heart-container { max-width: 300px; }
+  .heart-tile { font-size: 0.58rem; }
+  .roadmap { max-width: 300px; }
+  .roadmap-marker { width: 40px; height: 40px; font-size: 1.1rem; }
+  .roadmap-flag { font-size: 0.82rem; padding: 4px 10px; }
+  .roadmap-flag.flag-right { left: calc(100% + 8px); }
+  .roadmap-flag.flag-left { right: calc(100% + 8px); }
+  .road-preview { padding: 26px 20px 22px; }
+  .road-preview-title { font-size: 1.3rem; }
+  .road-preview-caption { font-size: 0.82rem; }
+  .road-modal { padding: 30px 20px 26px; max-height: 86vh; }
+  .road-modal-title { font-size: 1.5rem; }
+  .road-letter, .road-memory-text { font-size: 1.05rem; }
+}
+
+/* ---------- Уважаем настройку "меньше анимаций" ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
